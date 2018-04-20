@@ -18,6 +18,8 @@ import ngeoRoutingModule from 'ngeo/routing/module.js';
 import ngeoProjEPSG2056 from 'ngeo/proj/EPSG2056.js';
 import ngeoProjEPSG21781 from 'ngeo/proj/EPSG21781.js';
 import * as olBase from 'ol/index.js';
+import Raven from 'raven-js/src/raven.js';
+import RavenPluginAngular from 'raven-js/plugins/angular.js';
 
 if (!window.requestAnimationFrame) {
   alert('Your browser is not supported, please update it or use another one. You will be redirected.\n\n'
@@ -32,12 +34,13 @@ if (!window.requestAnimationFrame) {
  * @param {ngeo.misc.File} ngeoFile The file service.
  * @param {gettext} gettext The gettext service
  * @param {angular.$q} $q Angular $q.
+ * @param {string} ravenUrl The Raven URL.
  * @constructor
  * @extends {gmf.controllers.AbstractDesktopController}
  * @ngInject
  * @export
  */
-const exports = function($scope, $injector, ngeoFile, gettext, $q) {
+const exports = function($scope, $injector, ngeoFile, gettext, $q, ravenUrl) {
   gmfControllersAbstractDesktopController.call(this, {
     srid: 21781,
     mapViewConfig: {
@@ -128,6 +131,10 @@ const exports = function($scope, $injector, ngeoFile, gettext, $q) {
    * @export
    */
   this.bgOpacityOptions = 'Test aus Olten';
+
+  Raven.config(ravenUrl)
+    .addPlugin(RavenPluginsAngular)
+    .install();
 };
 
 olBase.inherits(exports, gmfControllersAbstractDesktopController);
